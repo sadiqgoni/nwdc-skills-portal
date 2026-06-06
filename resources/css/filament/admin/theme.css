@@ -1,0 +1,83 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*.php';
+@source '../../../../resources/views/**/*.blade.php';
+
+:root {
+    --nwdc-deep: #063f31;
+    --nwdc-green: #047857;
+    --nwdc-soft: #ecfdf5;
+}
+
+.fi-body {
+    background:
+        radial-gradient(circle at top right, rgba(16, 185, 129, 0.18), transparent 32%),
+        linear-gradient(180deg, #f0fdf4 0%, #f8faf7 38%, #eef8f0 100%);
+}
+
+.fi-sidebar {
+    background: linear-gradient(180deg, #063f31 0%, #064e3b 48%, #022c22 100%);
+    border-inline-end: 0;
+}
+
+.fi-sidebar .fi-logo,
+.fi-sidebar .fi-sidebar-header,
+.fi-sidebar .fi-sidebar-group-label {
+    color: #ecfdf5;
+}
+
+.fi-sidebar-item a {
+    border-radius: 0.5rem;
+}
+
+.fi-sidebar-item a {
+    color: #d1fae5;
+}
+
+.fi-sidebar-item a:hover {
+    background: rgba(255, 255, 255, 0.12) !important;
+    color: #ffffff !important;
+}
+
+.fi-sidebar-item-active a,
+.fi-sidebar-item-active a:hover,
+.fi-sidebar-item.fi-active a,
+.fi-sidebar-item.fi-active a:hover {
+    background: linear-gradient(90deg, #10b981, #059669) !important;
+    box-shadow: 0 12px 24px rgba(2, 44, 34, 0.28);
+    color: #ffffff !important;
+}
+
+.fi-sidebar-item-active .fi-sidebar-item-label,
+.fi-sidebar-item-active .fi-sidebar-item-icon,
+.fi-sidebar-item.fi-active .fi-sidebar-item-label,
+.fi-sidebar-item.fi-active .fi-sidebar-item-icon,
+.fi-sidebar-item a:hover .fi-sidebar-item-label,
+.fi-sidebar-item a:hover .fi-sidebar-item-icon {
+    color: #ffffff !important;
+}
+
+.fi-sidebar-item-label,
+.fi-sidebar-item-icon {
+    color: inherit !important;
+}
+
+.fi-topbar,
+.fi-header {
+    backdrop-filter: blur(14px);
+}
+
+.fi-section,
+.fi-ta,
+.fi-wi {
+    border-color: rgba(16, 185, 129, 0.22);
+    box-shadow: 0 14px 30px rgba(6, 78, 59, 0.08);
+}
+
+.fi-section-header {
+    background: linear-gradient(90deg, rgba(236, 253, 245, 0.82), rgba(255, 255, 255, 0));
+}
+
+.fi-btn-color-primary {
+    box-shadow: 0 10px 18px rgba(4, 120, 87, 0.18);
+}
