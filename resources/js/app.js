@@ -2,20 +2,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const revealItems = document.querySelectorAll('[data-reveal]');
 
     if (revealItems.length) {
-        const revealObserver = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (! entry.isIntersecting) {
-                    return;
-                }
+        if (window.matchMedia('(max-width: 639px)').matches) {
+            revealItems.forEach((item) => item.classList.add('is-visible'));
+        } else {
+            const revealObserver = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (! entry.isIntersecting) {
+                        return;
+                    }
 
-                entry.target.classList.add('is-visible');
-                revealObserver.unobserve(entry.target);
+                    entry.target.classList.add('is-visible');
+                    revealObserver.unobserve(entry.target);
+                });
+            }, {
+                threshold: 0.14,
             });
-        }, {
-            threshold: 0.14,
-        });
 
-        revealItems.forEach((item) => revealObserver.observe(item));
+            revealItems.forEach((item) => revealObserver.observe(item));
+        }
     }
 
     document.querySelectorAll('[data-password-toggle]').forEach((button) => {

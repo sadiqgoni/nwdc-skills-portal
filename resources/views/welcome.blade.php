@@ -11,6 +11,10 @@
             opacity: 0;
         }
 
+        .hero-slide:first-child {
+            opacity: 1;
+        }
+
         .hero-dot {
             animation: nwdcDotPulse 24s infinite;
             background: rgba(255, 255, 255, 0.38);
@@ -128,6 +132,19 @@
             [data-reveal="stagger"] > * {
                 opacity: 1;
                 transform: none;
+            }
+        }
+
+        @media (max-width: 639px) {
+            .rise-in,
+            .rise-in-delay,
+            [data-reveal],
+            [data-reveal="stagger"] > *,
+            .training-card img {
+                animation: none !important;
+                opacity: 1 !important;
+                transform: none !important;
+                transition: none !important;
             }
         }
 
