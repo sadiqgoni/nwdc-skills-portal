@@ -75,13 +75,7 @@
         }
 
         .track-marquee {
-            animation: nwdcMarquee 16s linear infinite;
-            will-change: transform;
-        }
-
-        .marquee-clip {
-            contain: paint;
-            max-width: 100vw;
+            animation: nwdcMarquee 28s linear infinite;
         }
 
         @keyframes nwdcMarquee {
@@ -273,7 +267,7 @@
             </div>
         </section>
 
-        <section class="marquee-clip overflow-hidden border-y border-emerald-900 bg-emerald-950 py-2 text-white">
+        <section class="overflow-hidden border-y border-emerald-900 bg-emerald-950 py-2 text-white">
             <div class="track-marquee flex w-max gap-3 px-3">
                 @foreach ([
                     'Digital Literacy',
@@ -301,7 +295,7 @@
                     'Cloud Computing Fundamentals',
                     'Automobile Mechanics',
                 ] as $track)
-                    <span class="rounded border border-white/10 bg-white/10 px-2.5 py-1.5 text-[10px] font-black uppercase tracking-wider text-emerald-50 sm:px-3 sm:py-2 sm:text-[11px]">{{ $track }}</span>
+                    <span class="rounded-md border border-white/10 bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-emerald-50">{{ $track }}</span>
                 @endforeach
             </div>
         </section>
