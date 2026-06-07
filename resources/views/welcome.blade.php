@@ -75,7 +75,7 @@
         }
 
         .track-marquee {
-            animation: nwdcMarquee 28s linear infinite;
+            animation: nwdcMarquee 16s linear infinite;
             will-change: transform;
         }
 
@@ -301,7 +301,7 @@
                     'Cloud Computing Fundamentals',
                     'Automobile Mechanics',
                 ] as $track)
-                    <span class="rounded-md border border-white/10 bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-emerald-50">{{ $track }}</span>
+                    <span class="rounded border border-white/10 bg-white/10 px-2.5 py-1.5 text-[10px] font-black uppercase tracking-wider text-emerald-50 sm:px-3 sm:py-2 sm:text-[11px]">{{ $track }}</span>
                 @endforeach
             </div>
         </section>
