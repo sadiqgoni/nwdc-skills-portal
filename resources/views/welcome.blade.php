@@ -72,6 +72,12 @@
 
         .track-marquee {
             animation: nwdcMarquee 28s linear infinite;
+            will-change: transform;
+        }
+
+        .marquee-clip {
+            contain: paint;
+            max-width: 100vw;
         }
 
         @keyframes nwdcMarquee {
@@ -144,6 +150,7 @@
         html,
         body {
             overflow-x: hidden;
+            width: 100%;
         }
 
         .mobile-safe {
@@ -249,7 +256,7 @@
             </div>
         </section>
 
-        <section class="overflow-hidden border-y border-emerald-900 bg-emerald-950 py-2 text-white">
+        <section class="marquee-clip overflow-hidden border-y border-emerald-900 bg-emerald-950 py-2 text-white">
             <div class="track-marquee flex w-max gap-3 px-3">
                 @foreach ([
                     'Digital Literacy',

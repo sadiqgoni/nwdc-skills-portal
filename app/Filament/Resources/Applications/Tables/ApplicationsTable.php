@@ -51,6 +51,10 @@ class ApplicationsTable
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('preferredTrainingHub.name')
                     ->searchable(),
+                TextColumn::make('latestScreeningReview.reviewer.name')
+                    ->label('Assigned reviewer')
+                    ->placeholder('Unassigned')
+                    ->searchable(),
                 TextColumn::make('date_of_birth')
                     ->date()
                     ->sortable()
@@ -174,13 +178,28 @@ class ApplicationsTable
                             ->columnSpanFull(),
                     ])
                     ->action(function (Application $record, array $data): void {
-                        $record->screeningReviews()->create([
-                            'reviewer_id' => auth()->id(),
-                            'decision' => $data['decision'],
-                            'score' => $data['score'],
-                            'notes' => $data['notes'] ?? null,
-                            'reviewed_at' => now(),
-                        ]);
+                        $review = $record->screeningReviews()
+                            ->whereIn('decision', ['pending', 'under_review'])
+                            ->latest('id')
+                            ->first();
+
+                        if ($review) {
+                            $review->update([
+                                'reviewer_id' => $review->reviewer_id ?: auth()->id(),
+                                'decision' => $data['decision'],
+                                'score' => $data['score'],
+                                'notes' => $data['notes'] ?? $review->notes,
+                                'reviewed_at' => now(),
+                            ]);
+                        } else {
+                            $record->screeningReviews()->create([
+                                'reviewer_id' => auth()->id(),
+                                'decision' => $data['decision'],
+                                'score' => $data['score'],
+                                'notes' => $data['notes'] ?? null,
+                                'reviewed_at' => now(),
+                            ]);
+                        }
 
                         $record->update([
                             'status' => $data['decision'],
@@ -196,7 +215,26 @@ class ApplicationsTable
                     ->visible(fn (Application $record): bool => in_array($record->status, ['eligible', 'shortlisted', 'admitted'], true))
                     ->form([
                         Select::make('training_hub_id')
-                            ->options(fn (): array => TrainingHub::query()->where('is_active', true)->orderBy('city')->pluck('name', 'id')->all())
+                            ->options(fn (Application $record): array => TrainingHub::query()
+                                ->where('is_active', true)
+                                ->whereHas('programmeTracks', fn ($query) => $query->whereKey($record->programme_track_id))
+                                ->with('state')
+                                ->get()
+                                ->sortBy(fn (TrainingHub $hub): string => ($hub->state_id === $record->state_of_origin_id ? '0' : '1') . $hub->city . $hub->name)
+                                ->mapWithKeys(fn (TrainingHub $hub): array => [
+                                    $hub->id => trim(($hub->state?->name ? $hub->state->name . ' - ' : '') . $hub->name),
+                                ])
+                                ->all())
+                            ->default(fn (Application $record): ?int => TrainingHub::query()
+                                ->where('is_active', true)
+                                ->whereHas('programmeTracks', fn ($query) => $query->whereKey($record->programme_track_id))
+                                ->where('state_id', $record->state_of_origin_id)
+                                ->orderBy('city')
+                                ->value('id') ?? TrainingHub::query()
+                                    ->where('is_active', true)
+                                    ->whereHas('programmeTracks', fn ($query) => $query->whereKey($record->programme_track_id))
+                                    ->orderBy('city')
+                                    ->value('id'))
                             ->required(),
                         DatePicker::make('reporting_date'),
                         Textarea::make('reporting_instructions')

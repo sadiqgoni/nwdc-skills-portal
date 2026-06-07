@@ -25,7 +25,7 @@ class ScreeningReviewForm
                                 ->searchable()
                                 ->required(),
                             Select::make('reviewer_id')
-                                ->relationship('reviewer', 'name')
+                                ->relationship('reviewer', 'name', fn ($query) => $query->where('role', 'admin')->where('is_active', true))
                                 ->searchable(),
                             Select::make('decision')
                                 ->options([

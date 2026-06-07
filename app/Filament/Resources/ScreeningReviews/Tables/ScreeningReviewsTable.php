@@ -19,6 +19,8 @@ class ScreeningReviewsTable
                 TextColumn::make('application.application_number')
                     ->searchable(),
                 TextColumn::make('reviewer.name')
+                    ->label('Assigned reviewer')
+                    ->placeholder('Unassigned')
                     ->searchable(),
                 TextColumn::make('decision')
                     ->badge()
@@ -56,6 +58,10 @@ class ScreeningReviewsTable
                         'waitlisted' => 'Waitlisted',
                         'rejected' => 'Rejected',
                     ]),
+                SelectFilter::make('reviewer_id')
+                    ->label('Assigned reviewer')
+                    ->relationship('reviewer', 'name', fn ($query) => $query->where('role', 'admin')->where('is_active', true))
+                    ->searchable(),
             ])
             ->recordActions([
                 ViewAction::make(),

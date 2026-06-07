@@ -26,45 +26,45 @@
             </div>
         @endif
 
-        <div class="mt-8 grid gap-5 lg:grid-cols-3">
+        <div class="mt-8 grid gap-4 lg:grid-cols-3">
             @foreach ($documentTypes as $type => $meta)
                 @php($document = $application->documents->firstWhere('document_type', $type))
-                <section class="overflow-hidden rounded-md bg-white shadow-md shadow-emerald-950/10 ring-1 ring-emerald-200">
-                    <div class="h-2 {{ $document ? 'bg-emerald-700' : 'bg-amber-400' }}"></div>
-                    <div class="p-6">
-                    <div class="flex items-start justify-between gap-3">
-                        <div>
-                            <h2 class="text-lg font-black text-slate-950">{{ $meta['label'] }}</h2>
-                            <p class="mt-2 text-sm leading-6 text-slate-600">{{ $meta['hint'] }}</p>
-                        </div>
-                        <span class="rounded-full px-3 py-1 text-xs font-black {{ $document ? 'bg-emerald-100 text-emerald-900' : 'bg-amber-100 text-amber-900' }}">
-                            {{ $document ? 'Uploaded' : 'Required' }}
-                        </span>
-                    </div>
+	                <section class="overflow-hidden rounded-md bg-white shadow-md shadow-emerald-950/10 ring-1 ring-emerald-200">
+	                    <div class="h-2 {{ $document ? 'bg-emerald-700' : 'bg-amber-400' }}"></div>
+	                    <div class="p-5">
+	                        <div class="flex min-w-0 items-start justify-between gap-3">
+	                            <div class="min-w-0">
+	                                <h2 class="truncate text-lg font-black text-slate-950">{{ $meta['label'] }}</h2>
+	                                <p class="mt-1 text-sm leading-6 text-slate-600">{{ $meta['hint'] }}</p>
+	                            </div>
+	                            <span class="shrink-0 rounded-full px-3 py-1 text-xs font-black {{ $document ? 'bg-emerald-100 text-emerald-900' : 'bg-amber-100 text-amber-900' }}">
+	                                {{ $document ? 'Uploaded' : 'Required' }}
+	                            </span>
+	                        </div>
 
-                    @if ($document)
-                        <div class="mt-5 rounded-md border border-emerald-100 bg-emerald-50/70 p-4 text-sm">
-                            <p class="font-bold text-slate-950">{{ $document->original_name }}</p>
-                            <p class="mt-1 text-slate-500">{{ number_format(($document->file_size ?? 0) / 1024, 1) }} KB</p>
-                            <p class="mt-2 font-semibold capitalize text-slate-700">Verification: {{ str_replace('_', ' ', $document->verification_status) }}</p>
-                            <a href="{{ route('portal.documents.view', $type) }}" target="_blank" class="mt-3 inline-flex rounded-md border border-emerald-200 bg-white px-3 py-2 text-xs font-black text-emerald-900 hover:bg-emerald-50">
-                                View File
-                            </a>
-                        </div>
-                    @endif
+	                        @if ($document)
+	                            <div class="mt-4 min-w-0 rounded-md border border-emerald-100 bg-emerald-50/70 p-4 text-sm">
+	                                <p class="truncate font-bold text-slate-950" title="{{ $document->original_name }}">{{ $document->original_name }}</p>
+	                                <p class="mt-1 text-slate-500">{{ number_format(($document->file_size ?? 0) / 1024, 1) }} KB</p>
+	                                <p class="mt-2 font-semibold capitalize text-slate-700">Status: {{ str_replace('_', ' ', $document->verification_status) }}</p>
+	                                <a href="{{ route('portal.documents.view', $type) }}" target="_blank" class="mt-3 inline-flex rounded-md border border-emerald-200 bg-white px-3 py-2 text-xs font-black text-emerald-900 hover:bg-emerald-50">
+	                                    View File
+	                                </a>
+	                            </div>
+	                        @endif
 
-                    @if (! $application->is_submitted)
-                        <form action="{{ route('portal.documents.upload', $type) }}" method="post" enctype="multipart/form-data" class="mt-5 space-y-3">
-                            @csrf
-                            <input name="document" type="file" required class="block w-full rounded-md border border-emerald-200 bg-emerald-50/50 px-4 py-3 text-sm outline-none ring-emerald-500 file:mr-4 file:rounded-md file:border-0 file:bg-white file:px-3 file:py-2 file:text-sm file:font-bold file:text-emerald-900 focus:ring-2">
-                            @error('document') <p class="text-sm text-rose-600">{{ $message }}</p> @enderror
-                            <button data-loading-text="Uploading..." class="w-full rounded-md bg-emerald-700 px-4 py-3 text-sm font-black text-white hover:bg-emerald-800">
-                                {{ $document ? 'Replace File' : 'Upload File' }}
-                            </button>
-                        </form>
-                    @endif
-                    </div>
-                </section>
+	                        @if (! $application->is_submitted)
+	                            <form action="{{ route('portal.documents.upload', $type) }}" method="post" enctype="multipart/form-data" class="mt-4 space-y-3">
+	                                @csrf
+	                                <input name="document" type="file" required class="block w-full min-w-0 rounded-md border border-emerald-200 bg-emerald-50/50 px-3 py-3 text-xs outline-none ring-emerald-500 file:mr-3 file:rounded-md file:border-0 file:bg-white file:px-3 file:py-2 file:text-xs file:font-bold file:text-emerald-900 focus:ring-2 sm:text-sm sm:file:text-sm">
+	                                @error('document') <p class="text-sm text-rose-600">{{ $message }}</p> @enderror
+	                                <button data-loading-text="Uploading..." class="w-full rounded-md bg-emerald-700 px-4 py-3 text-sm font-black text-white hover:bg-emerald-800">
+	                                    {{ $document ? 'Replace File' : 'Upload File' }}
+	                                </button>
+	                            </form>
+	                        @endif
+	                    </div>
+	                </section>
             @endforeach
         </div>
 

@@ -92,6 +92,11 @@ class Application extends Model
         return $this->hasMany(ScreeningReview::class);
     }
 
+    public function latestScreeningReview(): HasOne
+    {
+        return $this->hasOne(ScreeningReview::class)->latestOfMany();
+    }
+
     public function admission(): HasOne
     {
         return $this->hasOne(Admission::class);

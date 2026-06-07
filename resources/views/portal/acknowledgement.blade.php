@@ -77,6 +77,10 @@
                 Keep this acknowledgement number safe. Screening, shortlisting, admission notification, reporting instructions, and cohort assignment will be managed through the portal.
             </div>
 
+            <div class="no-print mt-6">
+                @include('portal.partials.application-workflow', ['application' => $application])
+            </div>
+
             <div class="mt-6 rounded-md bg-slate-50 p-5">
                 <h3 class="text-lg font-black text-slate-950">Notification details</h3>
                 <p class="mt-2 text-sm leading-7 text-slate-600">

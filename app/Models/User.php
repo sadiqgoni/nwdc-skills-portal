@@ -40,6 +40,11 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Application::class);
     }
 
+    public function assignedScreeningReviews(): HasMany
+    {
+        return $this->hasMany(ScreeningReview::class, 'reviewer_id');
+    }
+
     protected function casts(): array
     {
         return [

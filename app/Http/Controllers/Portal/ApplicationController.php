@@ -11,6 +11,7 @@ use App\Models\ProgrammeCycle;
 use App\Models\ProgrammeTrack;
 use App\Models\State;
 use App\Models\TrainingHub;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,6 +33,7 @@ class ApplicationController extends Controller
                 'preferredTrainingHub',
                 'documents',
                 'admission.trainingHub',
+                'latestScreeningReview.reviewer',
             ]),
             'cycle' => $this->activeCycle(),
         ]);
@@ -71,7 +73,7 @@ class ApplicationController extends Controller
             'tracks' => ProgrammeTrack::query()
                 ->whereHas('programmeCategory', fn ($query) => $query->where('programme_cycle_id', $cycle->id))
                 ->where('is_active', true)
-                ->with('programmeCategory')
+                ->with(['programmeCategory', 'trainingHubs:id,state_id,name,city'])
                 ->orderBy('name')
                 ->get(),
             'states' => State::query()->where('is_north_west', true)->orderBy('name')->get(),
@@ -168,6 +170,20 @@ class ApplicationController extends Controller
                 'programme_track_id' => 'Select a track under the chosen programme category.',
             ]);
         }
+
+        $stateHubId = $track->trainingHubs()
+            ->where('training_hubs.is_active', true)
+            ->where('training_hubs.state_id', $state->id)
+            ->orderBy('training_hubs.city')
+            ->value('training_hubs.id');
+
+        if (! $stateHubId) {
+            throw ValidationException::withMessages([
+                'preferred_training_hub_id' => 'No training hub in your state currently offers the selected track.',
+            ]);
+        }
+
+        $data['preferred_training_hub_id'] = $stateHubId;
 
         if (! $track->trainingHubs()->whereKey($data['preferred_training_hub_id'])->exists()) {
             throw ValidationException::withMessages([
@@ -315,7 +331,10 @@ class ApplicationController extends Controller
             'submitted_at' => now(),
         ]);
 
-        $this->queueAcknowledgements($application->fresh());
+        $application = $application->fresh();
+
+        $this->assignScreeningReview($application);
+        $this->queueAcknowledgements($application);
 
         return redirect()->route('portal.acknowledgement')->with('success', 'Application submitted. Your acknowledgement has been generated.');
     }
@@ -331,6 +350,8 @@ class ApplicationController extends Controller
             'preferredTrainingHub',
             'documents',
             'notifications',
+            'latestScreeningReview.reviewer',
+            'admission.trainingHub',
         ]);
 
         if (! $application || ! $application->submitted_at) {
@@ -371,20 +392,47 @@ class ApplicationController extends Controller
         return $number;
     }
 
+    private function assignScreeningReview(Application $application): void
+    {
+        if ($application->screeningReviews()->exists()) {
+            return;
+        }
+
+        $reviewer = User::query()
+            ->where('role', 'admin')
+            ->where('is_active', true)
+            ->withCount([
+                'assignedScreeningReviews as open_screening_reviews_count' => fn ($query) => $query
+                    ->whereIn('decision', ['pending', 'under_review']),
+            ])
+            ->orderBy('open_screening_reviews_count')
+            ->orderBy('id')
+            ->first();
+
+        $application->screeningReviews()->create([
+            'reviewer_id' => $reviewer?->id,
+            'decision' => 'pending',
+            'score' => 0,
+            'notes' => $reviewer
+                ? 'Automatically assigned for screening.'
+                : 'Pending assignment because no active admin reviewer is available.',
+        ]);
+    }
+
     private function documentTypes(): array
     {
         return [
             'identity_document' => [
-                'label' => 'Identity document',
-                'hint' => 'National ID slip, voter card, driver licence, or passport bio-data page.',
+                'label' => 'Identity',
+                'hint' => 'NIN slip, voter card, licence, or passport.',
             ],
             'certificate' => [
-                'label' => 'Certificate or result',
-                'hint' => 'Highest school certificate, result, trade certificate, or relevant evidence.',
+                'label' => 'Certificate',
+                'hint' => 'Result, certificate, or trade evidence.',
             ],
             'passport_photo' => [
-                'label' => 'Passport photograph',
-                'hint' => 'Recent passport photograph in JPG or PNG format.',
+                'label' => 'Passport photo',
+                'hint' => 'Recent JPG or PNG passport photo.',
             ],
         ];
     }

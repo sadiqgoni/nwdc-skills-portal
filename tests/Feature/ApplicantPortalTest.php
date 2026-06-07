@@ -84,6 +84,11 @@ class ApplicantPortalTest extends TestCase
         $this->assertNotNull($application->submitted_at);
         $this->assertDatabaseCount('application_documents', 3);
         $this->assertDatabaseCount('application_notifications', 2);
+        $this->assertDatabaseHas('screening_reviews', [
+            'application_id' => $application->id,
+            'reviewer_id' => 1,
+            'decision' => 'pending',
+        ]);
     }
 
     public function test_registration_requires_valid_contact_and_nin_details(): void

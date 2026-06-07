@@ -3,6 +3,16 @@
 @section('title', 'Application Form - NWDC Skills Portal')
 
 @section('content')
+    @php
+        $hubOptions = $hubs->map(function ($hub): array {
+            return [
+                'id' => (string) $hub->id,
+                'state_id' => (string) $hub->state_id,
+                'name' => trim(($hub->state?->name ? $hub->state->name . ' - ' : '') . $hub->name),
+            ];
+        })->values();
+    @endphp
+
     <section class="mx-auto max-w-7xl px-5 py-8 sm:px-6 lg:px-8">
         <div class="overflow-hidden rounded-md bg-emerald-950 shadow-xl shadow-emerald-950/15">
             <div class="relative p-6 text-white sm:p-8">
@@ -172,20 +182,23 @@
                             <select id="programme_track_id" name="programme_track_id" required @disabled($application?->is_submitted) class="mt-2 w-full rounded-md border border-slate-200 px-4 py-3 outline-none ring-emerald-500 focus:ring-2 disabled:bg-slate-100">
                                 <option value="">Select track</option>
                                 @foreach ($tracks as $track)
-                                    <option value="{{ $track->id }}" @selected(old('programme_track_id', $application?->programme_track_id) == $track->id)>{{ $track->programmeCategory?->name }} - {{ $track->name }}</option>
+                                    <option
+                                        value="{{ $track->id }}"
+                                        data-category-id="{{ $track->programme_category_id }}"
+                                        data-hub-ids="{{ $track->trainingHubs->pluck('id')->implode(',') }}"
+                                        @selected(old('programme_track_id', $application?->programme_track_id) == $track->id)
+                                    >
+                                        {{ $track->name }}
+                                    </option>
                                 @endforeach
                             </select>
                             @error('programme_track_id') <p class="mt-2 text-sm text-rose-600">{{ $message }}</p> @enderror
                         </div>
 
                         <div>
-                            <label for="preferred_training_hub_id" class="text-sm font-semibold text-slate-700">Preferred hub</label>
-                            <select id="preferred_training_hub_id" name="preferred_training_hub_id" required @disabled($application?->is_submitted) class="mt-2 w-full rounded-md border border-slate-200 px-4 py-3 outline-none ring-emerald-500 focus:ring-2 disabled:bg-slate-100">
-                                <option value="">Select hub</option>
-                                @foreach ($hubs as $hub)
-                                    <option value="{{ $hub->id }}" @selected(old('preferred_training_hub_id', $application?->preferred_training_hub_id) == $hub->id)>{{ $hub->state?->name }} - {{ $hub->name }}</option>
-                                @endforeach
-                            </select>
+                            <label for="preferred_training_hub_name" class="text-sm font-semibold text-slate-700">Training hub</label>
+                            <input id="preferred_training_hub_id" name="preferred_training_hub_id" type="hidden" value="{{ old('preferred_training_hub_id', $application?->preferred_training_hub_id) }}">
+                            <input id="preferred_training_hub_name" value="{{ $application?->preferredTrainingHub ? trim(($application->preferredTrainingHub->state?->name ? $application->preferredTrainingHub->state->name . ' - ' : '') . $application->preferredTrainingHub->name) : 'Select a track first' }}" readonly class="mt-2 w-full cursor-not-allowed rounded-md border border-slate-200 bg-slate-100 px-4 py-3 text-slate-700 outline-none">
                             @error('preferred_training_hub_id') <p class="mt-2 text-sm text-rose-600">{{ $message }}</p> @enderror
                         </div>
                     </div>
@@ -200,4 +213,69 @@
             @endif
         </form>
     </section>
+
+    @if (! $application?->is_submitted)
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const categorySelect = document.getElementById('programme_category_id');
+                const trackSelect = document.getElementById('programme_track_id');
+                const hubIdInput = document.getElementById('preferred_training_hub_id');
+                const hubNameInput = document.getElementById('preferred_training_hub_name');
+                const stateOfOriginId = @json((string) data_get($identity, 'state_of_origin_id'));
+                const hubs = @json($hubOptions);
+                const originalTrackOptions = Array.from(trackSelect.options).map((option) => option.cloneNode(true));
+
+                const replaceOptions = (select, options) => {
+                    select.replaceChildren(...options.map((option) => option.cloneNode(true)));
+                };
+
+                const selectedTrackHubIds = () => {
+                    const selected = trackSelect.selectedOptions[0];
+                    const hubIds = selected?.dataset.hubIds || '';
+
+                    return hubIds.split(',').filter(Boolean);
+                };
+
+                const filterTracks = () => {
+                    const selectedCategoryId = categorySelect.value;
+                    const currentTrackId = trackSelect.value;
+                    const options = originalTrackOptions.filter((option) => {
+                        return ! option.value || option.dataset.categoryId === selectedCategoryId;
+                    });
+
+                    replaceOptions(trackSelect, options);
+
+                    if (currentTrackId && Array.from(trackSelect.options).some((option) => option.value === currentTrackId)) {
+                        trackSelect.value = currentTrackId;
+                    } else {
+                        trackSelect.value = '';
+                    }
+                };
+
+                const filterHubs = () => {
+                    const hubIds = selectedTrackHubIds();
+                    const stateHub = hubs.find((hub) => hubIds.includes(hub.id) && hub.state_id === stateOfOriginId);
+
+                    if (stateHub) {
+                        hubIdInput.value = stateHub.id;
+                        hubNameInput.value = stateHub.name;
+                        return;
+                    }
+
+                    hubIdInput.value = '';
+                    hubNameInput.value = hubIds.length ? 'No hub in your state for this track' : 'Select a track first';
+                };
+
+                categorySelect.addEventListener('change', () => {
+                    filterTracks();
+                    filterHubs();
+                });
+
+                trackSelect.addEventListener('change', filterHubs);
+
+                filterTracks();
+                filterHubs();
+            });
+        </script>
+    @endif
 @endsection
