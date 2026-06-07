@@ -209,10 +209,10 @@
                     <aside class="relative mx-auto w-full max-w-full min-w-0 rise-in-delay">
                         <div class="mx-auto w-full max-w-full overflow-hidden rounded-lg bg-white/10 p-3 shadow-2xl shadow-black/30 ring-1 ring-white/15">
                             <div class="relative mx-auto aspect-[4/3] min-h-[300px] w-full max-w-full overflow-hidden rounded-md bg-emerald-950 sm:min-h-0 lg:max-h-[520px]">
-                                <img src="/images/skills-hero.jpg" alt="NWDC skills training" class="hero-slide absolute inset-0 h-full w-full object-cover object-center">
-                                <img src="/images/skills-2.jpg" alt="Digital skills classroom" class="hero-slide absolute inset-0 h-full w-full object-cover object-center">
-                                <img src="/images/skills.jpg" alt="Digital skills classroom" class="hero-slide absolute inset-0 h-full w-full object-cover object-center">
-                                <img src="/images/tvet-workshop.jpg" alt="TVET workshop" class="hero-slide absolute inset-0 h-full w-full object-cover object-center">
+                                <img src="/images/skills-hero.jpg" alt="NWDC skills training" width="1600" height="800" fetchpriority="high" decoding="async" class="hero-slide absolute inset-0 h-full w-full object-cover object-center">
+                                <img data-src="/images/skills-2.jpg" alt="Digital skills classroom" width="1170" height="738" loading="lazy" decoding="async" class="hero-slide absolute inset-0 h-full w-full object-cover object-center">
+                                <img data-src="/images/skills.jpg" alt="Digital skills classroom" width="1024" height="682" loading="lazy" decoding="async" class="hero-slide absolute inset-0 h-full w-full object-cover object-center">
+                                <img data-src="/images/tvet-workshop.jpg" alt="TVET workshop" width="1400" height="700" loading="lazy" decoding="async" class="hero-slide absolute inset-0 h-full w-full object-cover object-center">
                                 <div class="absolute inset-0 bg-gradient-to-t from-emerald-950/80 via-emerald-950/10 to-transparent"></div>
                                 <div class="absolute left-5 top-5 flex gap-2">
                                     <span class="hero-dot h-2 w-6 rounded-full"></span>
@@ -338,5 +338,21 @@
             </div>
         </section>
     </main>
+    <script>
+        window.addEventListener('load', () => {
+            const loadDeferredHeroSlides = () => {
+                document.querySelectorAll('.hero-slide[data-src]').forEach((image) => {
+                    image.src = image.dataset.src;
+                    image.removeAttribute('data-src');
+                });
+            };
+
+            if ('requestIdleCallback' in window) {
+                requestIdleCallback(loadDeferredHeroSlides, { timeout: 1200 });
+            } else {
+                setTimeout(loadDeferredHeroSlides, 600);
+            }
+        });
+    </script>
 </body>
 </html>
