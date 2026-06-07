@@ -70,21 +70,6 @@
             }
         }
 
-        .track-marquee {
-            animation: nwdcMarquee 28s linear infinite;
-            will-change: transform;
-        }
-
-        .marquee-clip {
-            contain: paint;
-            max-width: 100vw;
-        }
-
-        @keyframes nwdcMarquee {
-            from { transform: translateX(0); }
-            to { transform: translateX(-50%); }
-        }
-
         [data-reveal] {
             opacity: 0;
             transform: translateY(22px);
@@ -128,7 +113,6 @@
             .hero-dot,
             .rise-in,
             .rise-in-delay,
-            .track-marquee,
             [data-reveal],
             [data-reveal="stagger"] > *,
             .training-card img {
@@ -256,8 +240,8 @@
             </div>
         </section>
 
-        <section class="marquee-clip overflow-hidden border-y border-emerald-900 bg-emerald-950 py-2 text-white">
-            <div class="track-marquee flex w-max gap-3 px-3">
+        <section class="border-y border-emerald-900 bg-emerald-950 py-2 text-white">
+            <div class="mx-auto flex max-w-7xl flex-wrap gap-2 px-3">
                 @foreach ([
                     'Digital Literacy',
                     'Frontend Web Development',
@@ -271,20 +255,8 @@
                     'Catering and Culinary Skills',
                     'Cloud Computing Fundamentals',
                     'Automobile Mechanics',
-                    'Digital Literacy',
-                    'Frontend Web Development',
-                    'Solar Installation',
-                    'Welding and Fabrication',
-                    'UI/UX Design',
-                    'Data Analysis',
-                    'Tailoring and Fashion Design',
-                    'Phone Repair',
-                    'Cybersecurity Fundamentals',
-                    'Catering and Culinary Skills',
-                    'Cloud Computing Fundamentals',
-                    'Automobile Mechanics',
                 ] as $track)
-                    <span class="rounded-md border border-white/10 bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-wider text-emerald-50">{{ $track }}</span>
+                    <span class="rounded-md border border-white/10 bg-white/10 px-3 py-2 text-[11px] font-black uppercase tracking-wider text-emerald-50 sm:px-4 sm:text-xs">{{ $track }}</span>
                 @endforeach
             </div>
         </section>
