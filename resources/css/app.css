@@ -8,6 +8,18 @@
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
+html,
+body {
+    overflow-x: hidden;
+}
+
+input,
+select,
+textarea {
+    max-width: 100%;
+    min-width: 0;
+}
+
 .portal-loading-button {
     align-items: center;
     cursor: wait;

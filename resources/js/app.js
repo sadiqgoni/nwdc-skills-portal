@@ -40,6 +40,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.querySelectorAll('form').forEach((form) => {
         form.addEventListener('submit', (event) => {
+            if (form.dataset.skipLoadingButton !== undefined) {
+                return;
+            }
+
             const button = event.submitter || form.querySelector('button[type="submit"], button:not([type])');
 
             if (! button || button.dataset.loading === 'true') {

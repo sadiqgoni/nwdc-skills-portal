@@ -93,7 +93,7 @@ return new class extends Migration
             $table->unsignedInteger('capacity')->default(0);
             $table->timestamps();
 
-            $table->unique(['programme_track_id', 'training_hub_id']);
+            $table->unique(['programme_track_id', 'training_hub_id'], 'track_hub_unique');
         });
 
         Schema::create('applications', function (Blueprint $table): void {

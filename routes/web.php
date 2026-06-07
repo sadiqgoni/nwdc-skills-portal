@@ -22,9 +22,17 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/eligibility', function () {
+    $cycle = ProgrammeCycle::query()->where('status', 'active')->latest('id')->first();
+    $minimumAge = $cycle?->minimum_age ?? 18;
+    $maximumAge = $cycle?->maximum_age ?? 35;
+
     return view('eligibility', [
         'states' => State::query()->where('is_north_west', true)->orderBy('name')->get(),
         'result' => null,
+        'minimumDateOfBirth' => now()->subYears($maximumAge + 1)->addDay()->toDateString(),
+        'maximumDateOfBirth' => now()->subYears($minimumAge)->toDateString(),
+        'minimumAge' => $minimumAge,
+        'maximumAge' => $maximumAge,
     ]);
 })->name('eligibility');
 
@@ -32,6 +40,10 @@ Route::post('/eligibility', function (Request $request) {
     $data = $request->validate([
         'date_of_birth' => ['required', 'date', 'before:today'],
         'state_id' => ['required', 'exists:states,id'],
+    ], [
+        'date_of_birth.before' => 'Enter your real date of birth. Applicants for this cycle must already be within the approved age range.',
+        'date_of_birth.required' => 'Please select your date of birth.',
+        'state_id.required' => 'Please select your state of origin.',
     ]);
 
     $age = Carbon::parse($data['date_of_birth'])->age;
@@ -49,17 +61,29 @@ Route::post('/eligibility', function (Request $request) {
         ]);
     }
 
+    $result = [
+        'passed' => $passed,
+        'age' => $age,
+        'state' => $state->name,
+        'message' => $passed
+            ? 'Your details meet the first-stage requirements for this programme cycle.'
+            : 'Applications in this cycle are restricted to eligible applicants aged ' . $minimumAge . '-' . $maximumAge . ' from participating states.',
+        'redirect' => $passed
+            ? (auth()->check() ? route('portal.application.edit') : route('register'))
+            : null,
+    ];
+
+    if ($request->expectsJson()) {
+        return response()->json($result);
+    }
+
     return view('eligibility', [
         'states' => State::query()->where('is_north_west', true)->orderBy('name')->get(),
-        'result' => [
-            'passed' => $passed,
-            'age' => $age,
-            'state' => $state->name,
-            'message' => $passed
-                ? 'Your details meet the first-stage requirements for this programme cycle.'
-                : 'Applications in this cycle are restricted to eligible applicants aged ' . $minimumAge . '-' . $maximumAge . ' from participating states.',
-
-        ],
+        'result' => $result,
+        'minimumDateOfBirth' => now()->subYears($maximumAge + 1)->addDay()->toDateString(),
+        'maximumDateOfBirth' => now()->subYears($minimumAge)->toDateString(),
+        'minimumAge' => $minimumAge,
+        'maximumAge' => $maximumAge,
     ]);
 })->name('eligibility.check');
 

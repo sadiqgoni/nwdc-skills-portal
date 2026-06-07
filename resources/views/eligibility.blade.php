@@ -9,26 +9,26 @@
 <body class="min-h-screen bg-[radial-gradient(circle_at_80%_80%,#16a34a_0%,#0f7a3d_30%,#063f31_62%,#022c22_100%)] text-slate-950 antialiased">
     <main class="flex min-h-screen items-center justify-center px-5 py-10 sm:px-6 lg:px-8">
         <section class="grid w-full max-w-6xl overflow-hidden rounded-md bg-white shadow-2xl shadow-emerald-950/40 lg:min-h-[620px] lg:grid-cols-[0.86fr_1.14fr]">
-            <aside class="relative overflow-hidden bg-[#0b5f37] p-8 text-white sm:p-10 lg:p-12">
+            <aside class="relative overflow-hidden bg-[#0b5f37] p-5 text-white sm:p-10 lg:p-12">
                 <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.12),transparent_28%),linear-gradient(160deg,rgba(212,160,23,0.22),transparent_38%)]"></div>
                 <div class="relative flex h-full flex-col">
-                    <a href="{{ route('home') }}" class="inline-flex items-center gap-3">
-                        <span class="grid h-20 w-20 place-items-center rounded-xl bg-white/15 p-3 ring-1 ring-white/20">
-                            <img src="/images/nwdc.png" alt="NWDC" class="max-h-full max-w-full rounded-md bg-white object-contain p-1">
+                    <a href="{{ route('home') }}" class="inline-flex w-fit items-center">
+                        <span class="grid h-8 w-8 place-items-center rounded-md bg-white p-1 ring-1 ring-white/20 sm:h-12 sm:w-12">
+                            <img src="/images/nwdc.png" alt="NWDC" class="max-h-full max-w-full object-contain">
                         </span>
                     </a>
 
-                    <div class="mt-9">
-                        <p class="text-sm font-bold uppercase tracking-wider text-amber-100">Applicant pre-check</p>
-                        <h1 class="mt-3 text-3xl font-black leading-tight sm:text-4xl">
+                    <div class="mt-4 sm:mt-8">
+                        <p class="text-xs font-bold uppercase tracking-wider text-amber-100 sm:text-sm">Applicant pre-check</p>
+                        <h1 class="mt-2 text-2xl font-black leading-tight sm:mt-3 sm:text-4xl">
                             Confirm before account creation.
                         </h1>
-                        <p class="mt-5 max-w-md text-base leading-8 text-emerald-50">
-                            Before you create an account, this check confirms that your age and state of origin match the entry requirements for the active programme cycle.
+                        <p class="mt-3 max-w-md text-sm leading-6 text-emerald-50 sm:mt-5 sm:text-base sm:leading-8">
+                            Confirm your age and state of origin before account creation.
                         </p>
                     </div>
 
-                    <div class="mt-8 space-y-3">
+                    <div class="mt-4 hidden space-y-3 sm:mt-8 sm:block">
                         <div class="rounded-md bg-white/10 p-4 ring-1 ring-white/15">
                             <p class="font-black">Simple first step</p>
                             <p class="mt-1 text-sm leading-6 text-emerald-100">The full application opens immediately when your details meet the approved entry rule.</p>
@@ -39,13 +39,13 @@
                         </div>
                     </div>
 
-                    <p class="mt-auto pt-8 text-sm leading-6 text-emerald-100">
+                    <p class="mt-auto hidden pt-8 text-sm leading-6 text-emerald-100 sm:block">
                         Keep your NIN, phone number, email address, and documents ready. If you meet the requirement, you can continue immediately to account creation.
                     </p>
                 </div>
             </aside>
 
-            <div class="flex items-center p-8 sm:p-10 lg:p-14">
+            <div class="flex items-center p-5 sm:p-10 lg:p-14">
                 <div class="w-full">
                     <p class="text-sm font-bold uppercase tracking-wider text-emerald-700">Eligibility check</p>
                     <h2 class="mt-3 text-3xl font-black tracking-tight text-slate-950">Check your details.</h2>
@@ -83,7 +83,7 @@ Please enter your date of birth and state of origin. Eligible applicants will th
                     </form>
 
                     @if ($result)
-                        <div class="mt-6 rounded-md border p-5 {{ $result['passed'] ? 'border-emerald-200 bg-emerald-50 text-emerald-950' : 'border-rose-200 bg-rose-50 text-rose-950' }}">
+                        <div id="eligibility-result" tabindex="-1" class="mt-6 scroll-mt-6 rounded-md border p-5 outline-none {{ $result['passed'] ? 'border-emerald-200 bg-emerald-50 text-emerald-950' : 'border-rose-200 bg-rose-50 text-rose-950' }}">
                             <p class="text-sm font-bold uppercase tracking-wider">{{ $result['passed'] ? 'You can continue' : 'Not accepted for this cycle' }}</p>
                             <h3 class="mt-2 text-2xl font-black">{{ $result['state'] }} applicant, age {{ $result['age'] }}</h3>
                             <p class="mt-3 leading-7">{{ $result['message'] }}</p>
@@ -103,5 +103,18 @@ Please enter your date of birth and state of origin. Eligible applicants will th
             </div>
         </section>
     </main>
+
+    @if ($result)
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const result = document.getElementById('eligibility-result');
+
+                if (result) {
+                    result.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    result.focus({ preventScroll: true });
+                }
+            });
+        </script>
+    @endif
 </body>
 </html>

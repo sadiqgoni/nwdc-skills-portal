@@ -215,13 +215,13 @@
                         </div>
                     </div>
 
-                    <aside class="relative min-w-0 rise-in-delay">
-                        <div class="overflow-hidden rounded-lg bg-white/10 p-3 shadow-2xl shadow-black/30 ring-1 ring-white/15">
-                            <div class="relative aspect-[4/3] min-h-[300px] overflow-hidden rounded-md bg-emerald-950 sm:min-h-0 lg:max-h-[520px]">
-                                <img src="/images/skills-hero.jpg" alt="NWDC skills training" class="hero-slide absolute inset-0 h-full w-full object-cover">
-                                <img src="/images/skills-2.jpg" alt="Digital skills classroom" class="hero-slide absolute inset-0 h-full w-full object-cover">
-                                <img src="/images/skills.jpg" alt="Digital skills classroom" class="hero-slide absolute inset-0 h-full w-full object-cover">
-                                <img src="/images/tvet-workshop.jpg" alt="TVET workshop" class="hero-slide absolute inset-0 h-full w-full object-cover">
+                    <aside class="relative mx-auto w-full max-w-full min-w-0 rise-in-delay">
+                        <div class="mx-auto w-full max-w-full overflow-hidden rounded-lg bg-white/10 p-3 shadow-2xl shadow-black/30 ring-1 ring-white/15">
+                            <div class="relative mx-auto aspect-[4/3] min-h-[300px] w-full max-w-full overflow-hidden rounded-md bg-emerald-950 sm:min-h-0 lg:max-h-[520px]">
+                                <img src="/images/skills-hero.jpg" alt="NWDC skills training" class="hero-slide absolute inset-0 h-full w-full object-cover object-center">
+                                <img src="/images/skills-2.jpg" alt="Digital skills classroom" class="hero-slide absolute inset-0 h-full w-full object-cover object-center">
+                                <img src="/images/skills.jpg" alt="Digital skills classroom" class="hero-slide absolute inset-0 h-full w-full object-cover object-center">
+                                <img src="/images/tvet-workshop.jpg" alt="TVET workshop" class="hero-slide absolute inset-0 h-full w-full object-cover object-center">
                                 <div class="absolute inset-0 bg-gradient-to-t from-emerald-950/80 via-emerald-950/10 to-transparent"></div>
                                 <div class="absolute left-5 top-5 flex gap-2">
                                     <span class="hero-dot h-2 w-6 rounded-full"></span>

@@ -6,12 +6,12 @@
     <title>Create Account - NWDC Skills Portal</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="min-h-screen bg-[radial-gradient(circle_at_80%_80%,#16a34a_0%,#0f7a3d_30%,#063f31_62%,#022c22_100%)] text-slate-950 antialiased">
+<body class="min-h-screen overflow-x-hidden bg-[radial-gradient(circle_at_80%_80%,#16a34a_0%,#0f7a3d_30%,#063f31_62%,#022c22_100%)] text-slate-950 antialiased">
     @php
         $eligibilityLocked = filled(data_get($eligibility, 'date_of_birth')) && filled(data_get($eligibility, 'state_id'));
     @endphp
-    <main class="flex min-h-screen items-center justify-center px-5 py-8 sm:px-6 lg:px-8">
-        <section class="grid w-full max-w-7xl overflow-hidden rounded-md bg-white shadow-2xl shadow-emerald-950/40 lg:grid-cols-[0.82fr_1.18fr]">
+    <main class="flex min-h-screen items-center justify-center px-4 py-8 sm:px-6 lg:px-8">
+        <section class="grid w-full min-w-0 max-w-7xl overflow-hidden rounded-md bg-white shadow-2xl shadow-emerald-950/40 lg:grid-cols-[0.82fr_1.18fr]">
             <aside class="relative overflow-hidden bg-[#0b5f37] p-8 text-white sm:p-10 lg:p-12">
                 <div class="absolute inset-0 bg-[radial-gradient(circle_at_22%_18%,rgba(255,255,255,0.14),transparent_30%),linear-gradient(150deg,rgba(212,160,23,0.2),transparent_42%)]"></div>
                 <div class="relative flex h-full min-h-[520px] flex-col">
@@ -48,8 +48,8 @@
                 </div>
             </aside>
 
-            <div class="flex items-center p-8 sm:p-10 lg:p-12">
-                <div class="w-full">
+            <div class="flex min-w-0 items-center p-5 sm:p-10 lg:p-12">
+                <div class="w-full min-w-0">
                     @if (session('success') || session('error'))
                         <div class="mb-6 space-y-3">
                             @if (session('success'))
@@ -70,28 +70,28 @@
                 
                     <form action="{{ route('register.store') }}" method="post" class="mt-7">
                         @csrf
-                        <div class="grid gap-5 sm:grid-cols-2">
+                        <div class="grid min-w-0 gap-5 sm:grid-cols-2">
                             <div class="sm:col-span-2">
                                 <label for="name" class="text-sm font-bold text-slate-700">Full name</label>
-                                <input id="name" name="name" value="{{ old('name') }}" required class="mt-2 w-full rounded-md border border-slate-300 bg-slate-50 px-4 py-3 outline-none ring-emerald-500 focus:bg-white focus:ring-2">
+                                <input id="name" name="name" value="{{ old('name') }}" required class="mt-2 block w-full min-w-0 rounded-md border border-slate-300 bg-slate-50 px-4 py-3 outline-none ring-emerald-500 focus:bg-white focus:ring-2">
                                 @error('name') <p class="mt-2 text-sm text-rose-600">{{ $message }}</p> @enderror
                             </div>
 
                             <div>
                                 <label for="phone" class="text-sm font-bold text-slate-700">Phone number</label>
-                                <input id="phone" name="phone" value="{{ old('phone') }}" type="tel" inputmode="numeric" pattern="[0-9]{10,15}" minlength="10" maxlength="15" required autocomplete="tel" class="mt-2 w-full rounded-md border border-slate-300 bg-slate-50 px-4 py-3 outline-none ring-emerald-500 focus:bg-white focus:ring-2" placeholder="08030000001">
+                                <input id="phone" name="phone" value="{{ old('phone') }}" type="tel" inputmode="numeric" pattern="[0-9]{10,15}" minlength="10" maxlength="15" required autocomplete="tel" class="mt-2 block w-full min-w-0 rounded-md border border-slate-300 bg-slate-50 px-4 py-3 outline-none ring-emerald-500 focus:bg-white focus:ring-2" placeholder="08030000001">
                                 @error('phone') <p class="mt-2 text-sm text-rose-600">{{ $message }}</p> @enderror
                             </div>
 
                             <div>
                                 <label for="email" class="text-sm font-bold text-slate-700">Email address</label>
-                                <input id="email" name="email" type="email" value="{{ old('email') }}" required autocomplete="email" class="mt-2 w-full rounded-md border border-slate-300 bg-slate-50 px-4 py-3 outline-none ring-emerald-500 focus:bg-white focus:ring-2" placeholder="name@example.com">
+                                <input id="email" name="email" type="email" value="{{ old('email') }}" required autocomplete="email" class="mt-2 block w-full min-w-0 rounded-md border border-slate-300 bg-slate-50 px-4 py-3 outline-none ring-emerald-500 focus:bg-white focus:ring-2" placeholder="name@example.com">
                                 @error('email') <p class="mt-2 text-sm text-rose-600">{{ $message }}</p> @enderror
                             </div>
 
                             <div>
                                 <label for="nin" class="text-sm font-bold text-slate-700">NIN</label>
-                                <input id="nin" name="nin" value="{{ old('nin') }}" inputmode="numeric" pattern="[0-9]{11}" minlength="11" maxlength="11" required autocomplete="off" class="mt-2 w-full rounded-md border border-slate-300 bg-slate-50 px-4 py-3 outline-none ring-emerald-500 focus:bg-white focus:ring-2" placeholder="11-digit NIN">
+                                <input id="nin" name="nin" value="{{ old('nin') }}" inputmode="numeric" pattern="[0-9]{11}" minlength="11" maxlength="11" required autocomplete="off" class="mt-2 block w-full min-w-0 rounded-md border border-slate-300 bg-slate-50 px-4 py-3 outline-none ring-emerald-500 focus:bg-white focus:ring-2" placeholder="11-digit NIN">
                                 @error('nin') <p class="mt-2 text-sm text-rose-600">{{ $message }}</p> @enderror
                             </div>
 
@@ -100,7 +100,7 @@
                                 @if ($eligibilityLocked)
                                     <input type="hidden" name="date_of_birth" value="{{ data_get($eligibility, 'date_of_birth') }}">
                                 @endif
-                                <input id="date_of_birth" name="{{ $eligibilityLocked ? 'date_of_birth_display' : 'date_of_birth' }}" type="date" value="{{ $eligibilityLocked ? data_get($eligibility, 'date_of_birth') : old('date_of_birth') }}" required @disabled($eligibilityLocked) class="mt-2 w-full rounded-md border border-slate-300 bg-slate-50 px-4 py-3 outline-none ring-emerald-500 focus:bg-white focus:ring-2 disabled:cursor-not-allowed disabled:border-emerald-200 disabled:bg-emerald-50 disabled:text-emerald-950">
+                                <input id="date_of_birth" name="{{ $eligibilityLocked ? 'date_of_birth_display' : 'date_of_birth' }}" type="date" value="{{ $eligibilityLocked ? data_get($eligibility, 'date_of_birth') : old('date_of_birth') }}" required @disabled($eligibilityLocked) class="mt-2 block w-full min-w-0 rounded-md border border-slate-300 bg-slate-50 px-4 py-3 outline-none ring-emerald-500 focus:bg-white focus:ring-2 disabled:cursor-not-allowed disabled:border-emerald-200 disabled:bg-emerald-50 disabled:text-emerald-950">
                                 @error('date_of_birth') <p class="mt-2 text-sm text-rose-600">{{ $message }}</p> @enderror
                             </div>
 
@@ -109,7 +109,7 @@
                                 @if ($eligibilityLocked)
                                     <input type="hidden" name="state_id" value="{{ data_get($eligibility, 'state_id') }}">
                                 @endif
-                                <select id="state_id" name="{{ $eligibilityLocked ? 'state_id_display' : 'state_id' }}" required @disabled($eligibilityLocked) class="mt-2 w-full rounded-md border border-slate-300 bg-slate-50 px-4 py-3 outline-none ring-emerald-500 focus:bg-white focus:ring-2 disabled:cursor-not-allowed disabled:border-emerald-200 disabled:bg-emerald-50 disabled:text-emerald-950">
+                                <select id="state_id" name="{{ $eligibilityLocked ? 'state_id_display' : 'state_id' }}" required @disabled($eligibilityLocked) class="mt-2 block w-full min-w-0 rounded-md border border-slate-300 bg-slate-50 px-4 py-3 outline-none ring-emerald-500 focus:bg-white focus:ring-2 disabled:cursor-not-allowed disabled:border-emerald-200 disabled:bg-emerald-50 disabled:text-emerald-950">
                                     <option value="">Select state</option>
                                     @foreach ($states as $state)
                                         <option value="{{ $state->id }}" @selected(($eligibilityLocked ? data_get($eligibility, 'state_id') : old('state_id')) == $state->id)>{{ $state->name }}</option>
