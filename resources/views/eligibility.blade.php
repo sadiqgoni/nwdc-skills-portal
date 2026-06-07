@@ -58,7 +58,7 @@ Please enter your date of birth and state of origin. Eligible applicants will th
                         <div>
                             <label for="date_of_birth" class="text-sm font-bold text-slate-700">Date of birth</label>
                             <input id="date_of_birth" name="date_of_birth" type="date" value="{{ old('date_of_birth') }}" required
-                                class="mt-2 w-full rounded-md border border-slate-300 bg-slate-50 px-4 py-3 outline-none ring-emerald-500 focus:bg-white focus:ring-2">
+                                class="mt-2 block w-full min-w-0 max-w-full appearance-none rounded-md border border-slate-300 bg-slate-50 px-4 py-3 text-center outline-none ring-emerald-500 [box-sizing:border-box] [color-scheme:light] focus:bg-white focus:ring-2">
                             @error('date_of_birth')
                                 <p class="mt-2 text-sm text-rose-600">{{ $message }}</p>
                             @enderror

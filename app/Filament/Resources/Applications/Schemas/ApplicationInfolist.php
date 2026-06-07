@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\Applications\Schemas;
 
+use App\Models\ApplicationDocument;
 use Filament\Infolists\Components\IconEntry;
+use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
@@ -98,6 +100,46 @@ class ApplicationInfolist
                                 ->placeholder('-')
                                 ->columnSpanFull(),
                         ]),
+                    ]),
+
+                Section::make('Uploaded documents')
+                    ->icon('heroicon-o-paper-clip')
+                    ->schema([
+                        RepeatableEntry::make('documents')
+                            ->label('')
+                            ->placeholder('No documents uploaded yet.')
+                            ->grid(3)
+                            ->schema([
+                                TextEntry::make('document_type')
+                                    ->label('Type')
+                                    ->formatStateUsing(fn (string $state): string => str($state)->replace('_', ' ')->title()->toString())
+                                    ->weight(FontWeight::Bold),
+                                TextEntry::make('original_name')
+                                    ->label('File name')
+                                    ->placeholder('-')
+                                    ->limit(45),
+                                TextEntry::make('verification_status')
+                                    ->label('Status')
+                                    ->badge()
+                                    ->color(fn (string $state): string => match ($state) {
+                                        'approved', 'verified' => 'success',
+                                        'rejected' => 'danger',
+                                        default => 'warning',
+                                    })
+                                    ->formatStateUsing(fn (string $state): string => str($state)->replace('_', ' ')->title()->toString()),
+                                TextEntry::make('file_size')
+                                    ->label('Size')
+                                    ->formatStateUsing(fn (?int $state): string => $state ? number_format($state / 1024, 1) . ' KB' : '-'),
+                                TextEntry::make('created_at')
+                                    ->label('Uploaded')
+                                    ->dateTime(),
+                                TextEntry::make('file_path')
+                                    ->label('File')
+                                    ->state('Open file')
+                                    ->url(fn (ApplicationDocument $record): string => route('admin.application-documents.view', $record))
+                                    ->openUrlInNewTab()
+                                    ->weight(FontWeight::Bold),
+                            ]),
                     ]),
 
                 Section::make('Admin notes & timestamps')

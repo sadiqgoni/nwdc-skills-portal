@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Portal\ApplicationController;
 use App\Http\Controllers\Portal\AuthController;
+use App\Models\ApplicationDocument;
 use App\Models\ProgrammeCycle;
 use App\Models\ProgrammeTrack;
 use App\Models\State;
@@ -9,6 +10,7 @@ use App\Models\TrainingHub;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 Route::get('/', function () {
     $cycle = ProgrammeCycle::query()->where('status', 'active')->latest('id')->first();
@@ -92,6 +94,18 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.st
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.store');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
+
+Route::middleware('auth')->get('/admin/application-documents/{document}/view', function (ApplicationDocument $document) {
+    abort_unless(auth()->user()?->is_active && auth()->user()?->role === 'admin', 403);
+
+    if (! Storage::disk('local')->exists($document->file_path)) {
+        abort(404);
+    }
+
+    return response()->file(Storage::disk('local')->path($document->file_path), [
+        'Content-Type' => $document->mime_type ?: 'application/octet-stream',
+    ]);
+})->name('admin.application-documents.view');
 
 Route::middleware('auth')->prefix('portal')->name('portal.')->group(function (): void {
     Route::get('/', [ApplicationController::class, 'dashboard'])->name('dashboard');
